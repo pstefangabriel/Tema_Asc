@@ -1,0 +1,65 @@
+     1                                  bits 32
+     2                                  
+     3                                  global start
+     4                                  
+     5                                  extern nr_caractere, numaram_aparitile, afisare
+     6                                  extern exit, gets, printf
+     7                                  import printf msvcrt.dll
+     8                                  import exit msvcrt.dll
+     9                                  import gets msvcrt.dll
+    10                                  
+    11                                  segment data use32 class=data:
+    12 00000000 <res 00000064>              buffer resb 100
+    13 00000064 496E74726F64756365-         citeste db "Introduceti propozitia: ", 0
+    13 0000006D 74692070726F706F7A-
+    13 00000076 697469613A2000     
+    14 0000007D 257300                      format db "%s", 0
+    15 00000080 4C6974657261202563-         afiseaza db "Litera %c a aparut de %d ori ", 10, 13, 0
+    15 00000089 206120617061727574-
+    15 00000092 206465202564206F72-
+    15 0000009B 69200A0D00         
+    16 000000A0 00000000                    len dd 0
+    17 000000A4 414243444546474849-         litere db "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    17 000000AD 4A4B4C4D4E4F505152-
+    17 000000B6 535455565758595A61-
+    17 000000BF 62636465666768696A-
+    17 000000C8 6B6C6D6E6F70717273-
+    17 000000D1 7475767778797A     
+    18                                      len_litere equ 52
+    19 000000D8 00000000<rept>              frecventa times len_litere dd 0
+    20                                      
+    21                                  segment code use32 class=code:
+    22                                      start:
+    23 00000000 68[64000000]                    push dword citeste
+    24 00000005 FF15[00000000]                  call [printf]
+    25 0000000B 83C404                          add esp, 4
+    26                                          
+    27 0000000E 68[00000000]                    push dword buffer
+    28 00000013 FF15[00000000]                  call [gets]
+    29 00000019 83C404                          add esp, 4
+    30                                          
+    31                                          ;determinam numarul de caractere
+    32                                          
+    33 0000001C B8[00000000]                    mov eax, buffer
+    34 00000021 E8(00000000)                    call nr_caractere
+    35 00000026 8935[A0000000]                  mov [len], esi
+    36                                          
+    37                                          ; aflam numarul de aparitii a fiecarei litere
+    38                                                  
+    39 0000002C 68[A4000000]                    push dword litere
+    40 00000031 68[D8000000]                    push dword frecventa
+    41 00000036 6A34                            push dword len_litere
+    42 00000038 FF35[A0000000]                  push dword [len]
+    43 0000003E 68[00000000]                    push dword buffer
+    44 00000043 E8(00000000)                    call numaram_aparitile
+    45                                                 
+    46                                          ; afisare
+    47                                          
+    48 00000048 B8[A4000000]                    mov eax, litere
+    49 0000004D BB[D8000000]                    mov ebx, frecventa
+    50 00000052 B934000000                      mov ecx, len_litere
+    51 00000057 E8(00000000)                    call afisare
+    52                                          
+    53                                          
+    54 0000005C 6A00                            push dword 0
+    55 0000005E FF15[00000000]                  call [exit]
